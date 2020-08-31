@@ -23,7 +23,7 @@ export class Router {
     for (var route of this.routes) {
       const { matched, params } = this.matchToRoute(pathParts, route);
 
-      if (matched) {
+      if (matched && event.httpMethod === route.method) {
         return route.handler(event, params);
       }
     }

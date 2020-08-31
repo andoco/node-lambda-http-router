@@ -8,7 +8,7 @@ const buildHandler = (result: ALBResult = {} as ALBResult) => {
 };
 
 describe("Router", () => {
-  test("should route", () => {
+  test("should route plain path", () => {
     const router = new Router();
     const handler = buildHandler();
 
@@ -20,6 +20,21 @@ describe("Router", () => {
     } as ALBEvent);
 
     expect(handler).toHaveBeenCalled();
+  });
+
+  test("should not route different http method", () => {
+    const router = new Router();
+    const handler = buildHandler();
+
+    router.get("/foo", handler);
+
+    const result = router.route({
+      path: "/foo",
+      httpMethod: "POST",
+    } as ALBEvent);
+
+    expect(handler).not.toHaveBeenCalled();
+    expect(result).toEqual({ statusCode: 404 });
   });
 
   test("should route with path param", () => {
