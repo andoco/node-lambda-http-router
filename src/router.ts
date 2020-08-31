@@ -1,6 +1,6 @@
 import { ALBEvent, ALBResult } from "aws-lambda";
 
-type Handler = (event: ALBEvent) => ALBResult;
+type Handler = (event: ALBEvent, pathParams: object) => ALBResult;
 
 class Route {
   constructor(
@@ -18,10 +18,33 @@ export class Router {
   }
 
   route(event: ALBEvent): ALBResult {
+    const pathParts = event.path.split("/");
+
     for (var route of this.routes) {
-      if (route.pattern === event.path) {
-        return route.handler(event);
+      const { matched, params } = this.matchToRoute(pathParts, route);
+
+      if (matched) {
+        return route.handler(event, params);
       }
     }
+  }
+
+  private matchToRoute(
+    pathParts: Array<string>,
+    route: Route
+  ): { matched: boolean; params: object } {
+    const routeParts = route.pattern.split("/");
+    const minParts = Math.min(pathParts.length, routeParts.length);
+    const params = {};
+
+    for (var i = 0; i < minParts; i++) {
+      if (routeParts[i].startsWith(":")) {
+        params[routeParts[i].substring(1)] = pathParts[i];
+      } else if (pathParts[i] !== routeParts[i]) {
+        return { matched: false, params: null };
+      }
+    }
+
+    return { matched: true, params: params };
   }
 }
