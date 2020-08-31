@@ -27,6 +27,8 @@ export class Router {
         return route.handler(event, params);
       }
     }
+
+    return { statusCode: 404 };
   }
 
   private matchToRoute(

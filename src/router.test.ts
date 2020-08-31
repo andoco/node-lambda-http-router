@@ -54,4 +54,15 @@ describe("Router", () => {
     expect(handler).toHaveBeenCalled();
     expect(result).toEqual(handlerResult);
   });
+
+  test("should return 404 when route not found", () => {
+    const router = new Router();
+
+    const result = router.route({
+      path: "/foo",
+      httpMethod: "GET",
+    } as ALBEvent);
+
+    expect(result).toEqual({ statusCode: 404 });
+  });
 });
