@@ -22,6 +22,21 @@ describe("Router", () => {
     expect(handler).toHaveBeenCalled();
   });
 
+  test("should not route partial path match", () => {
+    const router = new Router();
+    const handler = buildHandler();
+
+    router.get("/foo", handler);
+
+    const result = router.route({
+      path: "/foo/bar",
+      httpMethod: "GET",
+    } as ALBEvent);
+
+    expect(handler).not.toHaveBeenCalled();
+    expect(result).toEqual({ statusCode: 404 });
+  });
+
   test("should not route different http method", () => {
     const router = new Router();
     const handler = buildHandler();

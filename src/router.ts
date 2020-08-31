@@ -36,7 +36,13 @@ export class Router {
     route: Route
   ): { matched: boolean; params: object } {
     const routeParts = route.pattern.split("/");
+
+    if (routeParts.length != pathParts.length) {
+      return { matched: false, params: null };
+    }
+
     const minParts = Math.min(pathParts.length, routeParts.length);
+
     const params = {};
 
     for (var i = 0; i < minParts; i++) {
