@@ -37,21 +37,24 @@ describe("Router", () => {
     expect(result).toEqual({ statusCode: 404 });
   });
 
-  test("should route with path param", () => {
+  test("should route with path params", () => {
     const router = new Router();
     const handler = buildHandler();
 
-    router.get("/user/:userId/profile", handler);
+    router.get("/user/:userId/post/:postId", handler);
 
     const event = {
-      path: "/user/1234/profile",
+      path: "/user/1234/post/abcd",
       httpMethod: "GET",
     } as ALBEvent;
 
     router.route(event);
 
     expect(handler).toHaveBeenCalled();
-    expect(handler).toHaveBeenCalledWith(event, { userId: "1234" });
+    expect(handler).toHaveBeenCalledWith(event, {
+      userId: "1234",
+      postId: "abcd",
+    });
   });
 
   test("should return result from handler", () => {
