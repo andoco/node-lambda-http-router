@@ -52,6 +52,36 @@ describe("Router", () => {
     expect(result).toEqual({ statusCode: 404 });
   });
 
+  test("should route to correct method", () => {
+    const router = new Router();
+
+    const handlers = {
+      get: buildHandler(),
+      post: buildHandler(),
+      put: buildHandler(),
+      patch: buildHandler(),
+      delete: buildHandler(),
+    };
+
+    router
+      .get("/foo", handlers.get)
+      .post("/foo", handlers.post)
+      .put("/foo", handlers.put)
+      .patch("/foo", handlers.patch)
+      .delete("/foo", handlers.delete);
+
+    for (const key in handlers) {
+      router.route({
+        path: "/foo",
+        httpMethod: key.toUpperCase(),
+      } as ALBEvent);
+
+      expect(handlers[key]).toHaveBeenCalled();
+
+      handlers[key].mockClear();
+    }
+  });
+
   test("should route with path params", () => {
     const router = new Router();
     const handler = buildHandler();

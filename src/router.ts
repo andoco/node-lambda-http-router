@@ -13,8 +13,29 @@ class Route {
 export class Router {
   routes: Array<Route> = [];
 
-  get(pattern: string, handler: Handler) {
+  get(pattern: string, handler: Handler): Router {
     this.routes.push(new Route(pattern, "GET", handler));
+    return this;
+  }
+
+  post(pattern: string, handler: Handler): Router {
+    this.routes.push(new Route(pattern, "POST", handler));
+    return this;
+  }
+
+  put(pattern: string, handler: Handler): Router {
+    this.routes.push(new Route(pattern, "PUT", handler));
+    return this;
+  }
+
+  patch(pattern: string, handler: Handler): Router {
+    this.routes.push(new Route(pattern, "PATCH", handler));
+    return this;
+  }
+
+  delete(pattern: string, handler: Handler): Router {
+    this.routes.push(new Route(pattern, "DELETE", handler));
+    return this;
   }
 
   route(event: ALBEvent): ALBResult {
